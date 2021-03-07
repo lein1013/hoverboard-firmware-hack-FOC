@@ -181,6 +181,12 @@
 #define MIN3(a, b, c) MIN(a, MIN(b, c))
 #define MAX3(a, b, c) MAX(a, MAX(b, c))
 #define ARRAY_LEN(x) (uint32_t)(sizeof(x) / sizeof(*(x)))
+#define MAP(x, in_min, in_max, out_min, out_max) (((((x) - (in_min)) * ((out_max) - (out_min))) / ((in_max) - (in_min))) + (out_min))
+
+#if defined(PRINTF_FLOAT_SUPPORT) && (defined(DEBUG_SERIAL_USART2) || defined(DEBUG_SERIAL_USART3)) && defined(__GNUC__)
+    asm(".global _printf_float");     // this is the magic trick for printf to support float. Warning: It will increase code considerably! Better to avoid!
+#endif
+
 
 typedef struct {
   uint16_t dcr; 
@@ -207,14 +213,21 @@ void PWM_ISR_CH1_Callback(void);
 void PWM_ISR_CH2_Callback(void);
 
 // Sideboard definitions
-#define LED1_SET     				(0x01)
-#define LED2_SET     				(0x02)
-#define LED3_SET     				(0x04)
-#define LED4_SET     				(0x08)
-#define LED5_SET     				(0x10)
-#define SENSOR1_SET    			(0x01)
-#define SENSOR2_SET    			(0x02)
-#define SENSOR_MPU    			(0x04)
+#define LED1_SET            (0x01)
+#define LED2_SET            (0x02)
+#define LED3_SET            (0x04)
+#define LED4_SET            (0x08)
+#define LED5_SET            (0x10)
+#define SENSOR1_SET         (0x01)
+#define SENSOR2_SET         (0x02)
+#define SENSOR_MPU          (0x04)
+
+// RC iBUS switch definitions. Flysky FS-i6S has [SWA, SWB, SWC, SWD] = [2, 3, 3, 2] positions switch
+#define SWA_SET             (0x0100)   //  0000 0001 0000 0000
+#define SWB_SET             (0x0600)   //  0000 0110 0000 0000
+#define SWC_SET             (0x1800)   //  0001 1000 0000 0000
+#define SWD_SET             (0x2000)   //  0010 0000 0000 0000
+
 
 #endif // DEFINES_H
 
